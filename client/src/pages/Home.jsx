@@ -2,40 +2,28 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Search,
-  Star,
-  GitBranch,
-  Users,
+  Bell,
+  History,
+  HelpCircle,
+  LayoutDashboard,
   Activity,
-  Clock,
-  TrendingUp,
-  Code,
-  ExternalLink,
-  LogOut,
   GitPullRequest,
+  Users,
+  Code,
+  MessageSquare,
+  Settings,
+  ShieldCheck,
+  CheckCircle2,
   AlertCircle,
-  CheckCircle,
-  BarChart3,
-  Zap,
-  Shield,
-  Target,
+  GitMerge,
+  Box,
+  TrendingUp
 } from "lucide-react";
-import { getGithubDashboard } from "../services/api.js";
 import "./Home.css";
 
 const Home = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchLoading, setSearchLoading] = useState(false);
-  const [recentRepos, setRecentRepos] = useState([]);
-  const [metrics, setMetrics] = useState({
-    totalRepos: 0,
-    totalStars: 0,
-    totalForks: 0,
-    totalContributors: 0,
-    avgCommitFreq: 0,
-    activeProjects: 0,
-  });
 
   useEffect(() => {
     const stored = localStorage.getItem("user");
@@ -44,348 +32,372 @@ const Home = () => {
       return;
     }
     setUser(JSON.parse(stored));
-    
-    // Load recent repositories from localStorage
-    const recent = JSON.parse(localStorage.getItem("recentRepos") || "[]");
-    setRecentRepos(recent);
-    
-    // Calculate metrics
-    calculateMetrics(recent);
   }, [navigate]);
-
-  const calculateMetrics = (repos) => {
-    const totalStars = repos.reduce((sum, repo) => sum + (repo.stars || 0), 0);
-    const totalForks = repos.reduce((sum, repo) => sum + (repo.forks || 0), 0);
-    const totalContributors = repos.reduce((sum, repo) => sum + (repo.contributors || 0), 0);
-    const avgCommitFreq = repos.length > 0 ? Math.round(repos.reduce((sum, repo) => sum + (repo.commitFreq || 0), 0) / repos.length) : 0;
-    const activeProjects = repos.filter(repo => repo.status === 'active').length;
-
-    setMetrics({
-      totalRepos: repos.length,
-      totalStars,
-      totalForks,
-      totalContributors,
-      avgCommitFreq,
-      activeProjects,
-    });
-  };
-
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-
-    setSearchLoading(true);
-    try {
-      // Extract owner and repo from GitHub URL or from "owner/repo" format
-      let owner, repo;
-      if (searchQuery.includes('github.com')) {
-        const match = searchQuery.match(/github\.com\/([^\/]+)\/([^\/\?#]+)/);
-        if (match) {
-          owner = match[1];
-          repo = match[2];
-        }
-      } else {
-        const parts = searchQuery.split('/');
-        if (parts.length === 2) {
-          owner = parts[0];
-          repo = parts[1];
-        }
-      }
-
-      if (!owner || !repo) {
-        throw new Error('Invalid repository format. Use "owner/repo" or GitHub URL');
-      }
-
-      // Fetch repository data
-      const data = await getGithubDashboard(owner, repo);
-      
-      // Add to recent repositories
-      const newRepo = {
-        id: `${owner}/${repo}`,
-        name: repo,
-        fullName: `${owner}/${repo}`,
-        description: data.repo?.description || 'No description available',
-        stars: data.repo?.stargazers_count || 0,
-        forks: data.repo?.forks_count || 0,
-        language: data.repo?.language || 'Unknown',
-        contributors: data.community_metrics?.total_contributors || 0,
-        commitFreq: data.activity_metrics?.activity_status === 'active' ? 10 : 5,
-        status: data.activity_metrics?.activity_status || 'inactive',
-        lastUpdated: data.repo?.updated_at || new Date().toISOString(),
-        url: data.repo?.html_url || `https://github.com/${owner}/${repo}`,
-      };
-
-      const updatedRepos = [newRepo, ...recentRepos.filter(r => r.id !== newRepo.id)].slice(0, 6);
-      setRecentRepos(updatedRepos);
-      localStorage.setItem("recentRepos", JSON.stringify(updatedRepos));
-      calculateMetrics(updatedRepos);
-
-      // Navigate to dashboard with this repo
-      navigate(`/dashboard?owner=${owner}&repo=${repo}`);
-      
-    } catch (error) {
-      console.error('Search error:', error);
-      alert(error.message || 'Failed to fetch repository data');
-    } finally {
-      setSearchLoading(false);
-    }
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'active':
-        return <CheckCircle size={16} className="status-active" />;
-      case 'moderate':
-        return <Clock size={16} className="status-moderate" />;
-      default:
-        return <AlertCircle size={16} className="status-inactive" />;
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'active':
-        return '#10b981';
-      case 'moderate':
-        return '#f59e0b';
-      default:
-        return '#6b7280';
-    }
-  };
 
   if (!user) return null;
 
   return (
-    <div className="home-wrapper">
-      {/* Header */}
-      <header className="home-header">
-        <div className="home-brand">
-          <div className="home-logo">
-            <Zap size={24} />
+    <div className="home-layout">
+      {/* Top Navbar */}
+      <header className="top-nav">
+        <div className="nav-left">
+          <div className="logo-container">
+            <h1 className="logo-text">GitPulse AI</h1>
           </div>
-          <div className="home-brand-text">
-            <h1>GitPulse AI</h1>
-            <span>Engineering Intelligence Platform</span>
+          <div className="search-container">
+            <Search className="search-icon" size={18} />
+            <input type="text" placeholder="Search repositories..." className="search-input" />
           </div>
         </div>
-        
-        <div className="home-user">
-          <div className="user-info">
-            <span className="user-name">{user.username}</span>
-            <span className="user-email">{user.email}</span>
+        <div className="nav-right">
+          <button className="icon-btn"><Bell size={18} /></button>
+          <button className="icon-btn"><History size={18} /></button>
+          <button className="icon-btn"><HelpCircle size={18} /></button>
+          <div className="user-avatar">
+            <img src="https://github.com/octocat.png" alt="User" />
           </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            <LogOut size={16} />
-            Sign out
-          </button>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="home-main">
-        {/* Search Section */}
-        <section className="search-section">
-          <div className="search-container">
-            <h2>Analyze any repository</h2>
-            <p>Get comprehensive insights about code quality, activity patterns, and community health</p>
-            
-            <form className="search-form" onSubmit={handleSearch}>
-              <div className="search-input-wrapper">
-                <Search size={20} className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Enter repository URL (e.g., facebook/react)"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="search-input"
-                />
-              </div>
-              <button type="submit" className="search-btn" disabled={searchLoading}>
-                {searchLoading ? (
-                  <div className="search-spinner"></div>
-                ) : (
-                  'Analyze Repository'
-                )}
-              </button>
-            </form>
-          </div>
-        </section>
-
-        {/* Metrics Overview */}
-        <section className="metrics-section">
-          <div className="metrics-grid">
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Code size={24} />
-              </div>
-              <div className="metric-content">
-                <div className="metric-value">{metrics.totalRepos}</div>
-                <div className="metric-label">Total Repositories</div>
-              </div>
+      <div className="main-container">
+        {/* Sidebar */}
+        <aside className="sidebar">
+          <div className="sidebar-header">
+            <div className="org-icon">
+              <Box size={20} />
             </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Star size={24} />
-              </div>
-              <div className="metric-content">
-                <div className="metric-value">{metrics.totalStars.toLocaleString()}</div>
-                <div className="metric-label">Total Stars</div>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <GitBranch size={24} />
-              </div>
-              <div className="metric-content">
-                <div className="metric-value">{metrics.totalForks.toLocaleString()}</div>
-                <div className="metric-label">Total Forks</div>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Users size={24} />
-              </div>
-              <div className="metric-content">
-                <div className="metric-value">{metrics.totalContributors}</div>
-                <div className="metric-label">Contributors</div>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <Activity size={24} />
-              </div>
-              <div className="metric-content">
-                <div className="metric-value">{metrics.avgCommitFreq}</div>
-                <div className="metric-label">Avg. Weekly Commits</div>
-              </div>
-            </div>
-
-            <div className="metric-card">
-              <div className="metric-icon">
-                <TrendingUp size={24} />
-              </div>
-              <div className="metric-content">
-                <div className="metric-value">{metrics.activeProjects}</div>
-                <div className="metric-label">Active Projects</div>
-              </div>
+            <div className="org-info">
+              <h2>OCTOCORE SYSTEMS</h2>
+              <p>V2.4 Analytics</p>
             </div>
           </div>
-        </section>
+          <nav className="sidebar-nav">
+            <a href="#" className="nav-item active">
+              <LayoutDashboard size={18} /> Overview
+            </a>
+            <a href="#" className="nav-item">
+              <ShieldCheck size={18} /> Repository Health
+            </a>
+            <a href="#" className="nav-item">
+              <Activity size={18} /> Development Activity
+            </a>
+            <a href="#" className="nav-item">
+              <Users size={18} /> Contributors
+            </a>
+            <a href="#" className="nav-item">
+              <Code size={18} /> Tech Stack
+            </a>
+            <a href="#" className="nav-item">
+              <MessageSquare size={18} /> Community Insights
+            </a>
+          </nav>
+          <div className="sidebar-footer">
+            <a href="#" className="nav-item">
+              <Settings size={18} /> Settings
+            </a>
+          </div>
+        </aside>
 
-        {/* Recent Repositories */}
-        <section className="recent-section">
-          <div className="section-header">
-            <h3>Recent Repositories</h3>
-            <button className="view-all-btn">View All</button>
+        {/* Content Area */}
+        <main className="content-area">
+          <div className="repo-header">
+            <div className="repo-title-group">
+              <div className="repo-name">
+                <h1>octocore/core-engine</h1>
+                <span className="badge active-badge">ACTIVE</span>
+              </div>
+              <div className="repo-meta">
+                <span>Last commit: 2 hours ago • <span className="branch-name">main</span> branch</span>
+              </div>
+            </div>
+            <div className="repo-stats-group">
+              <div className="stat-block">
+                <span className="stat-label">STARS</span>
+                <span className="stat-value">4.2k</span>
+              </div>
+              <div className="stat-block">
+                <span className="stat-label">FORKS</span>
+                <span className="stat-value">850</span>
+              </div>
+              <div className="stat-block">
+                <span className="stat-label">ISSUES</span>
+                <span className="stat-value issue-val">42</span>
+              </div>
+              <button className="primary-btn">Analyze New PR</button>
+            </div>
           </div>
 
-          {recentRepos.length === 0 ? (
-            <div className="empty-state">
-              <div className="empty-icon">
-                <Code size={48} />
+          <div className="dashboard-grid">
+            {/* Overall Health */}
+            <div className="panel health-panel">
+              <h3 className="panel-title">OVERALL HEALTH</h3>
+              <div className="health-ring-container">
+                <div className="health-ring">
+                  <div className="health-grade">A+</div>
+                </div>
               </div>
-              <h4>No repositories analyzed yet</h4>
-              <p>Start by searching for a repository above to see detailed insights</p>
+              <div className="health-desc">
+                <h4>Exemplary Code Quality</h4>
+                <p>Top 2% of analyzed repositories in the ecosystem.</p>
+              </div>
             </div>
-          ) : (
-            <div className="repos-grid">
-              {recentRepos.map((repo) => (
-                <div key={repo.id} className="repo-card">
-                  <div className="repo-header">
-                    <div className="repo-info">
-                      <h4>{repo.name}</h4>
-                      <span className="repo-fullname">{repo.fullName}</span>
-                    </div>
-                    <div className="repo-status">
-                      {getStatusIcon(repo.status)}
-                    </div>
+
+            {/* PR Lifecycle */}
+            <div className="panel pr-panel">
+              <div className="panel-header-flex">
+                <h3 className="panel-title">PR LIFECYCLE</h3>
+                <Activity size={16} className="panel-icon blue" />
+              </div>
+              <div className="pr-content">
+                <div className="pr-donut">
+                  <div className="donut-inner">65%</div>
+                </div>
+                <div className="pr-legend">
+                  <div className="legend-item">
+                    <span className="dot merged"></span> Merged: 214
                   </div>
-
-                  <p className="repo-description">{repo.description}</p>
-
-                  <div className="repo-stats">
-                    <div className="stat">
-                      <Star size={14} />
-                      <span>{repo.stars.toLocaleString()}</span>
-                    </div>
-                    <div className="stat">
-                      <GitBranch size={14} />
-                      <span>{repo.forks.toLocaleString()}</span>
-                    </div>
-                    <div className="stat">
-                      <Users size={14} />
-                      <span>{repo.contributors}</span>
-                    </div>
-                    <div className="stat">
-                      <Activity size={14} />
-                      <span>{repo.commitFreq}/wk</span>
-                    </div>
-                  </div>
-
-                  <div className="repo-footer">
-                    <div className="repo-language">
-                      <span className="language-dot" style={{ backgroundColor: getStatusColor(repo.status) }}></span>
-                      {repo.language}
-                    </div>
-                    <a href={repo.url} target="_blank" rel="noreferrer" className="repo-link">
-                      <ExternalLink size={14} />
-                      View on GitHub
-                    </a>
+                  <div className="legend-item">
+                    <span className="dot open"></span> Open: 115
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        {/* Features Section */}
-        <section className="features-section">
-          <h3>Platform Features</h3>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">
-                <BarChart3 size={24} />
               </div>
-              <h4>Advanced Analytics</h4>
-              <p>Deep insights into code quality, commit patterns, and development velocity</p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Shield size={24} />
+            {/* Avg Merge Time */}
+            <div className="panel merge-time-panel">
+              <h3 className="panel-title">AVG MERGE TIME</h3>
+              <div className="merge-content">
+                <div className="merge-stats">
+                  <div className="merge-val">1.4 <span>days</span></div>
+                  <div className="merge-trend positive">
+                    <TrendingUp size={14} /> 12% improvement
+                  </div>
+                </div>
+                <div className="mini-chart">
+                  <div className="bar b1"></div>
+                  <div className="bar b2"></div>
+                  <div className="bar b3"></div>
+                  <div className="bar b4"></div>
+                  <div className="bar b5"></div>
+                </div>
               </div>
-              <h4>Security Analysis</h4>
-              <p>Comprehensive security scanning and vulnerability assessment</p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon">
-                <Target size={24} />
+            {/* Resolution Rate */}
+            <div className="panel resolution-panel">
+              <h3 className="panel-title">RESOLUTION RATE</h3>
+              <div className="res-bars">
+                <div className="res-item">
+                  <div className="res-label">
+                    <span>Bug Fixes</span>
+                    <span>92%</span>
+                  </div>
+                  <div className="res-track"><div className="res-fill blue" style={{ width: '92%' }}></div></div>
+                </div>
+                <div className="res-item">
+                  <div className="res-label">
+                    <span>Features</span>
+                    <span>84%</span>
+                  </div>
+                  <div className="res-track"><div className="res-fill purple" style={{ width: '84%' }}></div></div>
+                </div>
               </div>
-              <h4>Performance Metrics</h4>
-              <p>Track repository performance and optimization opportunities</p>
             </div>
 
-            <div className="feature-card">
-              <div className="feature-icon">
-                <GitPullRequest size={24} />
+            {/* Stale Issues */}
+            <div className="panel stale-issues-panel">
+              <div className="panel-header-flex">
+                <h3 className="panel-title">STALE ISSUES</h3>
+                <span className="stale-count">12</span>
               </div>
-              <h4>PR Analysis</h4>
-              <p>Analyze pull request patterns and merge efficiency</p>
+              <div className="issues-list">
+                <div className="issue-item">
+                  <span className="issue-name">#1204 auth-bug-fix</span>
+                  <span className="issue-time">42 days</span>
+                </div>
+                <div className="issue-item">
+                  <span className="issue-name">#1198 docs-update</span>
+                  <span className="issue-time">38 days</span>
+                </div>
+                <div className="issue-item">
+                  <span className="issue-name">#1182 ci-optimization</span>
+                  <span className="issue-time">31 days</span>
+                </div>
+              </div>
             </div>
+
+            {/* Security Health */}
+            <div className="panel security-panel">
+              <div className="panel-header-flex">
+                <h3 className="panel-title">SECURITY HEALTH</h3>
+                <ShieldCheck size={16} className="panel-icon green" />
+              </div>
+              <div className="sec-score">94<span>/100</span></div>
+              <p className="sec-desc">0 Vulnerabilities detected in 184 dependencies.</p>
+              <div className="sec-tags">
+                <span className="tag green-tag">Snyk Passed</span>
+                <span className="tag green-tag">Dependabot Active</span>
+              </div>
+            </div>
+
+            {/* Commit Velocity */}
+            <div className="panel velocity-panel">
+              <div className="panel-header-flex">
+                <h3 className="panel-title">COMMIT VELOCITY (30D)</h3>
+                <div className="velocity-legend">
+                  <span className="v-leg"><span className="dot blue"></span> Main</span>
+                  <span className="v-leg"><span className="dot dark"></span> Dev</span>
+                </div>
+              </div>
+              <div className="velocity-chart-mock">
+                {/* Mocked bar chart visually matching the image */}
+                <div className="v-group"><div className="v-bar dark" style={{height:'30%'}}></div></div>
+                <div className="v-group"><div className="v-bar blue" style={{height:'40%'}}></div></div>
+                <div className="v-group"><div className="v-bar dark" style={{height:'25%'}}></div></div>
+                <div className="v-group"><div className="v-bar blue" style={{height:'50%'}}></div></div>
+                <div className="v-group"><div className="v-bar blue" style={{height:'45%'}}></div></div>
+                <div className="v-group"><div className="v-bar blue" style={{height:'65%'}}></div></div>
+                <div className="v-gap"></div>
+                <div className="v-group"><div className="v-bar dark" style={{height:'25%'}}></div></div>
+                <div className="v-group"><div className="v-bar dark" style={{height:'25%'}}></div></div>
+                <div className="v-group"><div className="v-bar blue" style={{height:'35%'}}></div></div>
+                <div className="v-gap"></div>
+                <div className="v-group"><div className="v-bar blue" style={{height:'80%'}}></div></div>
+                <div className="v-group"><div className="v-bar dark" style={{height:'45%'}}></div></div>
+                <div className="v-group"><div className="v-bar dark" style={{height:'30%'}}></div></div>
+                <div className="v-group"><div className="v-bar dark" style={{height:'35%'}}></div></div>
+              </div>
+            </div>
+
+            {/* Top Contributors */}
+            <div className="panel contributors-panel">
+              <h3 className="panel-title">TOP CONTRIBUTORS</h3>
+              <div className="contrib-list">
+                <div className="contrib-item">
+                  <div className="c-user">
+                    <img src="https://github.com/octocat.png" alt="octocat" className="c-avatar" />
+                    <span>octocat</span>
+                  </div>
+                  <span className="c-commits blue-text">482 commits</span>
+                </div>
+                <div className="contrib-item">
+                  <div className="c-user">
+                    <img src="https://github.com/defunkt.png" alt="v-dev-01" className="c-avatar" />
+                    <span>v-dev-01</span>
+                  </div>
+                  <span className="c-commits blue-text">321 commits</span>
+                </div>
+                <div className="contrib-item">
+                  <div className="c-user">
+                    <img src="https://github.com/torvalds.png" alt="stack_king" className="c-avatar" />
+                    <span>stack_king</span>
+                  </div>
+                  <span className="c-commits blue-text">215 commits</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Peak Coding Hours */}
+            <div className="panel hours-panel">
+              <h3 className="panel-title">PEAK CODING HOURS</h3>
+              <div className="hours-grid">
+                <div className="h-block faint"></div>
+                <div className="h-block faint"></div>
+                <div className="h-block light"></div>
+                <div className="h-block active"></div>
+                <div className="h-block active"></div>
+                <div className="h-block active"></div>
+              </div>
+              <div className="hours-labels">
+                <span>00:00</span>
+                <span>08:00</span>
+                <span>16:00</span>
+                <span className="blue-text">20:00 - 23:00</span>
+              </div>
+              <p className="hours-desc">Team is most active in evening blocks (PST).</p>
+            </div>
+
+            {/* Tech Stack */}
+            <div className="panel stack-panel">
+              <h3 className="panel-title">TECH STACK</h3>
+              <div className="stack-tags">
+                <div className="stack-tag"><span className="dot blue"></span> React</div>
+                <div className="stack-tag"><span className="dot gray"></span> Node.js</div>
+                <div className="stack-tag"><span className="dot blue"></span> TypeScript</div>
+                <div className="stack-tag"><span className="dot green"></span> MongoDB</div>
+              </div>
+            </div>
+
+            {/* Deployment Pipeline */}
+            <div className="panel pipeline-panel">
+              <h3 className="panel-title">DEPLOYMENT PIPELINE</h3>
+              <div className="pipe-list">
+                <div className="pipe-item">
+                  <div className="p-left">
+                    <CheckCircle2 size={16} className="green" />
+                    <span>GitHub Actions</span>
+                  </div>
+                  <span className="p-right green-text">99% Success</span>
+                </div>
+                <div className="pipe-item">
+                  <div className="p-left">
+                    <Activity size={16} className="green" />
+                    <span>Vercel Edge</span>
+                  </div>
+                  <span className="p-right dark-text">Healthy</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Latest Release */}
+            <div className="panel release-panel">
+              <h3 className="panel-title">LATEST RELEASE</h3>
+              <div className="release-info">
+                <div className="r-version">
+                  <span className="dot blue"></span>
+                  <h4>v2.4.0</h4>
+                  <span className="r-tag">Current</span>
+                </div>
+                <p className="r-desc">3 days ago • 14 feature updates, 2 hotfixes.</p>
+                <a href="#" className="r-link">View full changelog</a>
+              </div>
+            </div>
+
+            {/* Documentation Score */}
+            <div className="panel docs-panel">
+              <div className="panel-header-flex">
+                <h3 className="panel-title">DOCUMENTATION SCORE</h3>
+              </div>
+              <div className="docs-content">
+                <div className="docs-score">92<span>/100</span></div>
+                <div className="docs-bar-container">
+                  <div className="docs-bar-label">COVERAGE</div>
+                  <div className="docs-bar-track">
+                    <div className="docs-bar-fill" style={{width:'92%'}}></div>
+                  </div>
+                </div>
+                <div className="docs-checks">
+                  <span><CheckCircle2 size={12} className="green" /> Setup</span>
+                  <span><CheckCircle2 size={12} className="green" /> API Docs</span>
+                  <span><CheckCircle2 size={12} className="green" /> Usage</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Community Standards */}
+            <div className="panel standards-panel">
+              <h3 className="panel-title">COMMUNITY STANDARDS</h3>
+              <div className="std-grid">
+                <div className="std-item"><CheckCircle2 size={14} className="green" /> Readme</div>
+                <div className="std-item"><CheckCircle2 size={14} className="green" /> License</div>
+                <div className="std-item"><AlertCircle size={14} className="gray" /> Security</div>
+                <div className="std-item"><CheckCircle2 size={14} className="green" /> Contributing</div>
+              </div>
+            </div>
+
           </div>
-        </section>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

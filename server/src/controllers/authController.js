@@ -22,7 +22,12 @@ const createOrUpdateUser = async (userData) => {
       source: "mongodb"
     };
   } catch (error) {
-    // Fallback to in-memory storage
+    // If it's a validation or duplicate key error, throw it so the client knows
+    if (error.name === 'ValidationError' || error.code === 11000) {
+      throw error;
+    }
+    
+    // Otherwise, it's likely a connection error, so fallback to in-memory storage
     const userId = Date.now().toString();
     const user = {
       id: userId,
@@ -108,6 +113,12 @@ export const signup = async (req, res) => {
       user: { id: user.id, username: user.username, email: user.email },
     });
   } catch (err) {
+    if (err.name === 'ValidationError') {
+      return res.status(400).json({ message: Object.values(err.errors).map(e => e.message).join(', ') || err.message });
+    }
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "Username or email is already in use" });
+    }
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };

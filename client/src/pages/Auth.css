@@ -1,88 +1,79 @@
-/* ── GitPulse AI Auth Design ───────────────────────────────────────────── */
+/* ── GitPulse AI Modern Auth Design ───────────────────────────────────────────── */
 
-/* ── Auth layout with purple gradient background ─────────────────────────── */
+:root {
+  --auth-bg: #f8fafc;
+  --auth-card-bg: #ffffff;
+  --auth-primary: #8b5cf6;
+  --auth-primary-hover: #7c3aed;
+  --auth-text: #1e293b;
+  --auth-text-muted: #64748b;
+  --auth-border: #e2e8f0;
+  --auth-input-bg: #f1f5f9;
+}
+
 .auth-wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #e9d5ff 0%, #f3e8ff 25%, #faf5ff 50%, #f9fafb 100%);
+  background: radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.05), transparent 40%),
+              radial-gradient(circle at top right, rgba(56, 189, 248, 0.05), transparent 40%),
+              var(--auth-bg);
   padding: 1.5rem;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  position: relative;
-  overflow: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* ── Background decoration ────────────────────────────────────────────────── */
-.auth-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-}
-
-.auth-chart-graphic {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  opacity: 0.6;
-}
-
-.chart-svg {
-  width: 200px;
-  height: 100px;
-}
-
-/* ── White card design ─────────────────────────────────────────────────────── */
 .auth-card {
   width: 100%;
-  max-width: 420px;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 2.5rem 2rem 2rem;
-  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15), 0 8px 16px rgba(0, 0, 0, 0.05);
-  position: relative;
-  z-index: 1;
+  max-width: 440px;
+  background: var(--auth-card-bg);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.02),
+              0 0 0 1px rgba(0, 0, 0, 0.01);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* ── Header with monitor icon ─────────────────────────────────────────────── */
+/* ── Header ────────────────────────────────────────────────────────────────── */
 .auth-header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
 }
 
 .auth-logo {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  width: 56px;
+  height: 56px;
+  background: #eef2ff;
   border-radius: 12px;
   margin-bottom: 1.5rem;
-  color: #ffffff;
-  box-shadow: 0 8px 16px rgba(139, 92, 246, 0.2);
+  color: #6366f1;
 }
 
 .auth-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--auth-text);
   margin: 0 0 0.5rem;
-  line-height: 1.3;
+  letter-spacing: -0.025em;
 }
 
 .auth-subtitle {
-  font-size: 0.875rem;
-  color: #6b7280;
-  margin: 0;
-  line-height: 1.4;
+  font-size: 0.9375rem;
+  color: var(--auth-text-muted);
+  line-height: 1.5;
+  max-width: 280px;
+  margin: 0 auto;
 }
 
-/* ── OAuth buttons ───────────────────────────────────────────────────────── */
+/* ── OAuth ─────────────────────────────────────────────────────────────────── */
 .oauth-buttons {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -90,45 +81,43 @@
 }
 
 .oauth-btn {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
 }
 
 .github-btn {
-  background: #1f2937;
+  background: #1e293b;
   color: #ffffff;
 }
 
 .github-btn:hover {
-  background: #111827;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #0f172a;
 }
 
 .gitlab-btn {
   background: #ffffff;
-  color: #374151;
-  border-color: #d1d5db;
+  color: var(--auth-text);
+  border-color: var(--auth-border);
 }
 
 .gitlab-btn:hover {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
 /* ── Divider ───────────────────────────────────────────────────────────────── */
 .auth-divider {
+  width: 100%;
   position: relative;
   text-align: center;
   margin: 1.5rem 0;
@@ -141,21 +130,23 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: #e5e7eb;
+  background: var(--auth-border);
 }
 
 .auth-divider span {
-  background: #ffffff;
-  padding: 0 0.75rem;
-  color: #9ca3af;
+  background: var(--auth-card-bg);
+  padding: 0 1rem;
+  color: #94a3b8;
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
   position: relative;
 }
 
-/* ── Form styling ─────────────────────────────────────────────────────────── */
+/* ── Form ──────────────────────────────────────────────────────────────────── */
 .auth-form {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
@@ -165,167 +156,136 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  position: relative;
 }
 
 .form-group label {
   font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  letter-spacing: 0.05em;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: #94a3b8;
+  pointer-events: none;
 }
 
 .auth-input {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  color: #1f2937;
-  font-size: 0.875rem;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  background: var(--auth-input-bg);
+  border: 1px solid transparent;
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  color: var(--auth-text);
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
-.auth-input::placeholder {
-  color: #9ca3af;
-}
-
 .auth-input:focus {
   outline: none;
-  border-color: #8b5cf6;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-}
-
-.password-group {
-  position: relative;
+  background: #ffffff;
+  border-color: var(--auth-primary);
+  box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
 }
 
 .forgot-link {
   position: absolute;
   right: 0;
-  top: -0.25rem;
+  top: 0;
   font-size: 0.75rem;
-  color: #8b5cf6;
+  color: var(--auth-primary);
   background: none;
   border: none;
   cursor: pointer;
-  font-weight: 500;
-  transition: color 0.2s ease;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-.forgot-link:hover {
-  color: #7c3aed;
-}
-
-/* ── Submit button with gradient ──────────────────────────────────────────── */
+/* ── Submit ───────────────────────────────────────────────────────────────── */
 .auth-submit-btn {
-  margin-top: 0.5rem;
   width: 100%;
   padding: 0.875rem 1rem;
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
   border: none;
-  border-radius: 8px;
+  border-radius: 12px;
   color: #ffffff;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.auth-submit-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+.auth-submit-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
 }
 
-.auth-submit-btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-  transform: none;
+.auth-submit-btn:active {
+  transform: translateY(0);
 }
 
-/* ── Error banner ─────────────────────────────────────────────────────────── */
-.auth-error {
-  font-size: 0.8125rem;
-  color: #dc2626;
-  background: rgba(220, 38, 38, 0.05);
-  border: 1px solid rgba(220, 38, 38, 0.2);
-  border-radius: 6px;
-  padding: 0.625rem 0.875rem;
-  margin-bottom: 1rem;
-}
-
-/* ── Spinner ──────────────────────────────────────────────────────────────── */
-.spinner {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top-color: #ffffff;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ── Footer link ──────────────────────────────────────────────────────────── */
+/* ── Footer ───────────────────────────────────────────────────────────────── */
 .auth-footer {
-  text-align: center;
-  font-size: 0.8125rem;
-  color: #6b7280;
-  margin: 1.5rem 0 1rem;
+  margin-top: 2rem;
+  font-size: 0.875rem;
+  color: var(--auth-text-muted);
 }
 
 .auth-footer a {
-  color: #8b5cf6;
+  color: var(--auth-primary);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.auth-footer a:hover {
-  color: #7c3aed;
-}
-
-/* ── Status indicator ──────────────────────────────────────────────────────── */
-.auth-status {
-  text-align: left;
-  font-size: 0.625rem;
-  color: #6b7280;
-  margin-top: 1rem;
-  font-family: 'Courier New', monospace;
-  letter-spacing: 0.05em;
-}
-
-.status-optimal {
-  color: #10b981;
   font-weight: 600;
 }
 
-/* ── Responsive design ───────────────────────────────────────────────────── */
-@media (max-width: 480px) {
-  .auth-wrapper {
-    padding: 1rem;
-  }
-  
-  .auth-card {
-    padding: 2rem 1.5rem 1.5rem;
-  }
-  
-  .auth-chart-graphic {
-    bottom: 10px;
-    right: 10px;
-  }
-  
-  .chart-svg {
-    width: 150px;
-    height: 75px;
-  }
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ── Status Badge ──────────────────────────────────────────────────────────── */
+.status-badge {
+  margin-top: 2.5rem;
+  background: #ffffff;
+  border: 1px solid var(--auth-border);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--auth-text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.auth-error {
+  width: 100%;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  color: #dc2626;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  text-align: center;
 }
