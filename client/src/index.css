@@ -1,26 +1,20 @@
-:root {
-  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #0f172a;
-  background-color: #f8fafc;
+@import "tailwindcss";
+
+@theme {
+  --color-pulse-dark: #06080c;
+  --color-pulse-card: #0c111a;
+  --color-pulse-teal: #00f2ff;
+  --color-pulse-blue: #2d83ec;
+  --color-brand-purple: #8b5cf6;
+  --color-brand-dark: #0a0c10;
+  --color-panel-dark: #11141a;
+  --color-sidebar-dark: #0d1117;
+
+  --background-image-pulse-gradient: linear-gradient(135deg, #00f2ff 0%, #2d83ec 100%);
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-.app {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 3rem 1.25rem;
-}
-
-h1 {
-  margin-top: 0;
+@layer base {
+  body {
+    @apply m-0 min-h-screen font-sans bg-pulse-dark text-white;
+  }
 }
