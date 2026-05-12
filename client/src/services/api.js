@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const API_BASE_URL = "http://localhost:5001/api";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: API_BASE_URL,
+  timeout: 15000,
 });
 
 api.interceptors.request.use((config) => {
@@ -10,11 +13,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const getHealthStatus = async () => {
-  const { data } = await api.get("/health");
-  return data;
-};
-
+// AUTHENTICATION EXPORTS (Restored)
 export const signup = async (payload) => {
   const { data } = await api.post("/auth/signup", payload);
   return data;
@@ -30,8 +29,9 @@ export const getMe = async () => {
   return data;
 };
 
+// GITHUB ANALYTICS EXPORTS
 export const getGithubDashboard = async (owner, repo) => {
-  const { data } = await api.get("/github/dashboard", { params: { owner, repo } });
+  const { data } = await api.get(`/github/dashboard`, { params: { owner, repo } });
   return data;
 };
 

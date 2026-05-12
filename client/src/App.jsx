@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import Home from "./pages/Home.jsx";
-import Dashboard from "./pages/Dashboard.jsx";
 
 const App = () => (
   <BrowserRouter>
@@ -11,7 +10,8 @@ const App = () => (
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/home" element={<Home />} />
-      <Route path="/dashboard/:owner/:repo" element={<Dashboard />} />
+      {/* Fallback to Home for any dashboard links */}
+      <Route path="/dashboard/:owner/:repo" element={<Navigate to="/home" replace />} />
     </Routes>
   </BrowserRouter>
 );
