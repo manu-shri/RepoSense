@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 // Correctly locate the .env file inside the src folder
 dotenv.config({ path: path.join(__dirname, ".env") });
 
-const PORT = process.env.PORT || 5001;
+const PORT = 8888;
 
 const startServer = async () => {
   try {

@@ -84,31 +84,6 @@ const Home = () => {
   if (!user) return null;
 
   return (
-    <div className="flex min-h-screen bg-[#020617] text-[#e6edf3] font-sans overflow-hidden">
-      {/* SIDEBAR */}
-      <aside className="w-[280px] bg-[#020617] flex-col hidden lg:flex border-r border-white/5 shrink-0 relative z-20">
-        <div className="p-8 flex items-center gap-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white shadow-[0_0_20px_rgba(79,70,229,0.4)]">
-            <Cpu size={22} strokeWidth={2.5} />
-          </div>
-          <div>
-            <h2 className="text-sm font-black text-white uppercase tracking-widest leading-tight">OCTOCORE</h2>
-            <p className="text-[10px] font-bold text-indigo-400/60 tracking-widest">NEURAL v2.4</p>
-          </div>
-        </div>
-        <nav className="flex-1 px-4 flex flex-col gap-2 mt-4">
-          <SidebarItem icon={<LayoutDashboard size={18} />} label="Overview" active />
-          <SidebarItem icon={<Stethoscope size={18} />} label="Code Health Detector" />
-          <SidebarItem icon={<Users size={18} />} label="Contributor Analysis" />
-          <SidebarItem icon={<Gauge size={18} />} label="Benchmark Engine" />
-          <SidebarItem icon={<Sparkles size={18} />} label="AI Repo Summary" />
-        </nav>
-        <div className="p-6">
-          <SidebarItem icon={<LogOut size={18} />} label="Sign Out" onClick={handleLogout} />
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT AREA */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
         <header className="h-[70px] border-b border-white/5 flex items-center justify-between px-8 shrink-0 bg-[#020617]/50 backdrop-blur-xl z-50">
           <div className="flex items-center gap-8">
@@ -267,13 +242,11 @@ const Home = () => {
           </div>
         </main>
       </div>
-    </div>
   );
 };
 
 // HELPERS
 const GlassCard = ({ children, className = "" }) => <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className={`bg-white/[0.02] border border-white/5 backdrop-blur-md rounded-3xl shadow-xl transition-all duration-500 ${className}`}>{children}</motion.div>;
-const SidebarItem = ({ icon, label, active = false, onClick }) => <button onClick={onClick} className={`flex items-center gap-4 px-4 py-3.5 rounded-xl text-xs font-black tracking-widest transition-all w-full text-left ${active ? 'bg-indigo-600/10 text-indigo-400 border border-indigo-500/20' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}><span className={active ? 'text-indigo-400' : 'text-gray-600'}>{icon}</span><span className="uppercase">{label}</span></button>;
 const HeaderStat = ({ label, value, color = "text-white" }) => <div className="flex flex-col items-center"><span className="text-[10px] font-black text-gray-500 tracking-[0.2em] mb-2 uppercase leading-none">{label}</span><span className={`text-2xl font-black italic tracking-tighter ${color}`}>{typeof value === 'string' ? value : Intl.NumberFormat('en', { notation: 'compact' }).format(value || 0)}</span></div>;
 const MetricBox = ({ label, value, color = "text-white" }) => <div><p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-1">{label}</p><p className={`text-xl font-black italic ${color}`}>{value}</p></div>;
 const StatusBadge = ({ label, active = false }) => <div className={`px-2 py-1.5 rounded-lg border flex items-center justify-center gap-2 ${active ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-white/5 border-white/10 text-gray-600'}`}><div className={`w-1 h-1 rounded-full ${active ? 'bg-emerald-500 shadow-[0_0_8px_rgba(52,211,153,0.8)]' : 'bg-gray-700'}`} /><span className="text-[9px] font-black uppercase tracking-tighter">{label}</span></div>;

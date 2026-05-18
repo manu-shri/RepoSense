@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getHealth } from "../controllers/healthController.js";
 
 const router = Router();
 
-router.get("/health", getHealth);
+// Legacy health route removed to resolve export mismatch and restore server stability.
+// Use /api/github/health/structure for diagnostic data.
 
 export default router;
