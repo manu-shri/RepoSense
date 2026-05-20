@@ -36,7 +36,8 @@ const ContributorAnalysis = () => {
 
   const handleAnalyze = () => {
     if (!repoUrl.trim()) return;
-    const cleanUrl = repoUrl.trim().replace(/^(http|https):\/\//, "").replace(/\/$/, "").replace(/\.git$/, "");
+    let cleanUrl = repoUrl.trim().split('?')[0].split('#')[0];
+    cleanUrl = cleanUrl.replace(/^(http|https):\/\//, "").replace(/\/$/, "").replace(/\.git$/, "");
     const segments = cleanUrl.split("/");
     let newOwner, newRepo;
 

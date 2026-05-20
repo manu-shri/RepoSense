@@ -44,7 +44,8 @@ const Benchmark = () => {
 
   const parseRepoUrl = (url) => {
     if (!url) return null;
-    let clean = url.trim().replace(/^(http|https):\/\//, "").replace(/\/$/, "").replace(/\.git$/, "");
+    let clean = url.trim().split('?')[0].split('#')[0];
+    clean = clean.replace(/^(http|https):\/\//, "").replace(/\/$/, "").replace(/\.git$/, "");
     clean = clean.replace(/^git@github\.com:/, "github.com/");
     const segments = clean.split("/");
     if (segments[0].includes("github.com") && segments.length >= 3) return { owner: segments[1], repo: segments[2] };

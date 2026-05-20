@@ -4,7 +4,7 @@ const API_BASE_URL = "http://localhost:8888/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 15000,
+  timeout: 60000,
   withCredentials: true,
 });
 
@@ -58,6 +58,11 @@ export const getContributorIntelligence = async (owner, repo) => {
 
 export const getContributorPortfolio = async (username) => {
   const { data } = await api.get(`/github/contributors/portfolio/${username}`);
+  return data;
+};
+
+export const getAiSummary = async (owner, repo) => {
+  const { data } = await api.get(`/github/ai-summary`, { params: { owner, repo } });
   return data;
 };
 

@@ -1,5 +1,5 @@
 import { useNavigate, useLocation, useSearchParams, Outlet } from "react-router-dom";
-import { LayoutDashboard, Users, Stethoscope, Gauge, Layers } from "lucide-react";
+import { LayoutDashboard, Users, Stethoscope, Gauge, Layers, Sparkles } from "lucide-react";
 
 const SidebarItem = ({ icon, label, active = false, onClick }) => (
   <button onClick={onClick} className={`flex items-center gap-4 px-4 py-4 rounded-xl text-[10px] font-black tracking-widest transition-all w-full text-left ${active ? 'bg-indigo-600/10 text-indigo-400 border border-indigo-500/20 shadow-[0_0_15px_rgba(79,70,229,0.1)]' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
@@ -58,6 +58,12 @@ const Layout = () => {
             label="Benchmark Engine" 
             active={location.pathname === "/benchmark"}
             onClick={() => handleNavigate("/benchmark")} 
+          />
+          <SidebarItem 
+            icon={<Sparkles size={18} />} 
+            label="AI Summary" 
+            active={location.pathname === "/ai-summary"}
+            onClick={() => handleNavigate("/ai-summary")} 
           />
         </nav>
       </aside>

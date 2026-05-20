@@ -42,7 +42,8 @@ const Home = () => {
     const urlToUse = (manualUrl || repoUrl).trim();
     if (!urlToUse) return;
 
-    const cleanUrl = urlToUse.replace(/^(http|https):\/\//, "").replace(/\/$/, "").replace(/\.git$/, "");
+    let cleanUrl = urlToUse.split('?')[0].split('#')[0];
+    cleanUrl = cleanUrl.replace(/^(http|https):\/\//, "").replace(/\/$/, "").replace(/\.git$/, "");
     const segments = cleanUrl.split("/");
     let owner, repo;
 
@@ -89,10 +90,34 @@ const Home = () => {
           <div className="flex items-center gap-8">
             <h1 className="text-xl font-black tracking-tighter text-white uppercase italic">GitPulse AI</h1>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-6 relative">
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-white/10 cursor-pointer shadow-lg" onClick={() => setShowProfileMenu(!showProfileMenu)}>
               <img src={`https://ui-avatars.com/api/?name=${user.email}&background=6366f1&color=fff&bold=true`} className="w-full h-full object-cover" />
             </div>
+
+            {/* PROFILE DROPDOWN */}
+            <AnimatePresence>
+              {showProfileMenu && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute top-14 right-0 w-48 bg-[#0f172a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50 flex flex-col"
+                >
+                  <div className="px-4 py-3 border-b border-white/5">
+                    <p className="text-xs font-bold text-white truncate">{user.email}</p>
+                    <p className="text-[10px] text-gray-500 uppercase tracking-widest mt-1">Operator</p>
+                  </div>
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 px-4 py-3 text-xs text-red-400 hover:bg-white/5 transition-colors font-black uppercase tracking-[0.1em] w-full text-left"
+                  >
+                    <LogOut size={16} />
+                    System Logout
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </header>
 

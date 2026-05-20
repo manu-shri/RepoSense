@@ -5,6 +5,7 @@ import Home from "./pages/Home.jsx";
 import Benchmark from "./pages/Benchmark.jsx";
 import CodeHealth from "./pages/CodeHealth.jsx";
 import ContributorAnalysis from "./pages/ContributorAnalysis.jsx";
+import AiSummary from "./pages/AiSummary.jsx";
 import Layout from "./components/Layout.jsx";
 
 const App = () => (
@@ -18,6 +19,7 @@ const App = () => (
         <Route path="/benchmark" element={<Benchmark />} />
         <Route path="/code-health" element={<CodeHealth />} />
         <Route path="/contributor-analysis" element={<ContributorAnalysis />} />
+        <Route path="/ai-summary" element={<AiSummary />} />
       </Route>
       {/* Fallback to Home for any dashboard links */}
       <Route path="/dashboard/:owner/:repo" element={<Navigate to="/home" replace />} />
